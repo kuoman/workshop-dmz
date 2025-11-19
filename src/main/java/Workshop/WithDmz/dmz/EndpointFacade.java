@@ -1,32 +1,31 @@
 package Workshop.WithDmz.dmz;
 
-import Workshop.WithDmzAi.businessLogic.AccountService;
-import Workshop.WithDmzAi.dmz.DatabaseFacade;
-import Workshop.WithDmzAi.dmz.IDatabaseFacade;
-import Workshop.WithDmzAi.entity.Account;
-import org.springframework.beans.factory.annotation.Autowired;
+import Workshop.WithDmz.businessLogic.AccountService;
+import Workshop.WithDmz.entity.Account;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
-public class EndpointFacade {
+public class EndpointFacade implements IEndpointFacade {
     private AccountService accountService;
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-    private IDatabaseFacade accountDatabaseFacade;
+
+    public EndpointFacade() {
+        this(new AccountService());
+    }
+
+    public EndpointFacade(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public ResponseEntity<?> handleAccountCreation(Account account) {
         try {
+            // insert all business logic here...
             validateAccount(account);
 
-            Account savedAccount = accountService.createAccount(account);
-            // insert all business logic here...
-
-            // hand-off to DMZ
-            DatabaseFacade.DatabaseOperationResult<Account> result = accountDatabaseFacade.saveAccount(account);
-
-            return buildSuccessResponse(savedAccount);
+            return accountService.createAccount(account);
 
         } catch (IllegalArgumentException e) {
             return buildValidationErrorResponse(e.getMessage());

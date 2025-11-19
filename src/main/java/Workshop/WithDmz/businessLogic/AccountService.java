@@ -1,8 +1,13 @@
 package Workshop.WithDmz.businessLogic;
 
-import Workshop.Original.entity.Account;
-import Workshop.Original.repository.IRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import Workshop.WithDmz.dmz.DatabaseFacade;
+import Workshop.WithDmz.dmz.IDatabaseFacade;
+import Workshop.WithDmz.entity.Account;
+import Workshop.WithDmz.repository.AccountRepository;
+import Workshop.WithDmz.repository.IRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,17 +15,30 @@ import java.util.regex.Pattern;
 
 @Service
 public class AccountService {
-
-    @Autowired
-    private IRepository accountRepository;
+    private IDatabaseFacade accountDatabaseFacade;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
         "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
     );
 
-    public Account createAccount(Account account) {
+    public AccountService(){
+        this(new DatabaseFacade(new AccountRepository()));
+    }
+
+    public AccountService(IDatabaseFacade databaseFacade) {
+        this.accountDatabaseFacade = accountDatabaseFacade;
+    }
+
+
+    public ResponseEntity<?> createAccount(Account account) {
+        // business logic here
+
         validateAccount(account);
-        return accountRepository.save(account);
+
+        // hand-off to DMZ
+        accountDatabaseFacade.saveAccount(account);
+
+        return new ResponseEntity<>(account, HttpStatus.CREATED);
     }
 
     private void validateAccount(Account account) {

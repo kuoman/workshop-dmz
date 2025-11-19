@@ -1,10 +1,9 @@
 package Workshop.WithDmz.controller;
 
 
-import Workshop.Original.entity.Account;
-import Workshop.Original.businessLogic.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import Workshop.WithDmz.dmz.EndpointFacade;
+import Workshop.WithDmz.dmz.IEndpointFacade;
+import Workshop.WithDmz.entity.Account;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,19 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class Controller {
+    IEndpointFacade endpointFacade;
 
-    @Autowired
-    private AccountService accountService;
+    public Controller() {
+        this(new EndpointFacade());
+    }
+
+    public Controller(IEndpointFacade endpointFacade) {
+        this.endpointFacade = endpointFacade;
+    }
 
     @PostMapping("/accounts")
     public ResponseEntity<?> createAccount(@RequestBody Account account) {
-        try {
-            Account savedAccount = accountService.createAccount(account);
-            return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return endpointFacade.handleAccountCreation(account);
     }
 }
