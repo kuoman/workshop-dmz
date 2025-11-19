@@ -1,19 +1,16 @@
-package Workshop.WithDmz.controller;
+package Workshop.Original.controller;
 
 
-import Workshop.WithDmz.entity.Account;
-import Workshop.WithDmz.Service.AccountService;
+import Workshop.Original.businessLogic.AccountService;
+import Workshop.Original.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-public class AccountController {
+public class Controller {
 
     @Autowired
     private AccountService accountService;

@@ -1,9 +1,9 @@
 package Workshop.WithDmz.repository;
 
-import Workshop.WithDmz.entity.Account;
+import Workshop.Original.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface IRepository extends JpaRepository<Account, Long> {
 }

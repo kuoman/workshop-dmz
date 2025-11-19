@@ -1,7 +1,7 @@
-package Workshop.WithDmz.Service;
+package Workshop.WithDmz.businessLogic;
 
-import Workshop.WithDmz.entity.Account;
-import Workshop.WithDmz.repository.AccountRepository;
+import Workshop.Original.entity.Account;
+import Workshop.Original.repository.IRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class AccountService {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private IRepository accountRepository;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
         "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"

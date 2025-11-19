@@ -1,9 +1,11 @@
-package Workshop.Original.Service;
+package Workshop.WithDmzAi.businessLogic;
 
-import Workshop.Original.entity.Account;
-import Workshop.Original.repository.AccountRepository;
+import Workshop.WithDmzAi.entity.Account;
+import Workshop.WithDmzAi.dmz.IDatabaseFacade;
+import Workshop.WithDmzAi.dmz.DatabaseFacade.DatabaseOperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
@@ -11,7 +13,7 @@ import java.util.regex.Pattern;
 public class AccountService {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private IDatabaseFacade accountDatabaseFacade;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
         "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
@@ -19,7 +21,19 @@ public class AccountService {
 
     public Account createAccount(Account account) {
         validateAccount(account);
-        return accountRepository.save(account);
+
+        // insert all business logic here...
+
+        // hand-off to DMZ
+        DatabaseOperationResult<Account> result = accountDatabaseFacade.saveAccount(account);
+
+        // come back from DMZ here
+
+        if (result.isSuccess()) {
+            return result.getData();
+        } else {
+            throw new RuntimeException("Failed to save account: " + result.getMessage());
+        }
     }
 
     private void validateAccount(Account account) {
